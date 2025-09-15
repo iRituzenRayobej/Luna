@@ -118,11 +118,41 @@ made by hax & dan
 version: 1.3 (Beta)
 ` + Reset)
 
-	fmt.Println(Yellow + "Available commands:" + Reset)
-	fmt.Println(Green + "  LunaHelp (lh, -lh)       -> Show this help screen with ASCII art")
-	fmt.Println("  LunaCommit (lc, -c)      -> Generate commit messages for each staged file")
-	fmt.Println("      -e                    -> Include emojis in commit messages (optional)")
-	fmt.Println("  LunaApikey (lkey, -lkey) -> Set your Gemini API key" + Reset)
+fmt.Println(Yellow + "Available commands:" + Reset)
+
+
+fmt.Println(Green + "  LunaHelp" + Reset + " (lh, -lh)")
+fmt.Println("-> Shows this help screen with ASCII art.")
+fmt.Println("-> Aliases: lh, -lh")
+fmt.Println("-> Usage examples:")
+fmt.Println("[ + ] lunahelp")
+fmt.Println("[ + ] lh")
+fmt.Println("[ + ] luna -lh")
+fmt.Println()
+
+fmt.Println(Green + "  LunaCommit" + Reset + " (lc, -c)")
+fmt.Println("-> Generates commit messages automatically for each staged file using Gemini AI.")
+fmt.Println("-> By default, commits are text-only. To include emojis, use the -e flag.")
+fmt.Println("-> Aliases: lc, -c")
+fmt.Println("-> Optional flags:")
+fmt.Println("[ + ] -e  -> Include emojis in the commit messages")
+fmt.Println("-> Usage examples:")
+fmt.Println("[ + ] lunacommit")
+fmt.Println("[ + ] lc")
+fmt.Println("[ + ] luna -c")
+fmt.Println("[ + ] luna -c -e  (commit with emojis)")
+fmt.Println()
+
+
+fmt.Println(Green + "  LunaApikey" + Reset + " (lkey, -lkey)")
+fmt.Println("-> Sets your Gemini API key for the LunaCommit generator.")
+fmt.Println("-> Aliases: lkey, -lkey")
+fmt.Println("-> Usage example:")
+fmt.Println("[ + ] lunaapikey YOUR_API_KEY")
+fmt.Println("[ + ] lkey YOUR_API_KEY")
+fmt.Println("[ + ] luna -lkey YOUR_API_KEY")
+fmt.Println()
+
 }
 
 func runCommitGenerator(includeEmoji bool) {

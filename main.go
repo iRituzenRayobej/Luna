@@ -8,10 +8,12 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+
 
 type Part struct {
 	Text string `json:"text"`
@@ -39,12 +41,12 @@ func main() {
 		return
 	}
 
-	switch os.Args[1] {
-	case "LunaHelp":
+	switch strings.ToLower(os.Args[1]) {
+	case "lunahelp":
 		showHelp()
-	case "LunaCommit":
+	case "lunacommit":
 		runCommitGenerator()
-	case "LunaApikey":
+	case "lunaapikey":
 		setApiKey()
 	default:
 		fmt.Println("Unknown command. Use: LunaHelp")
@@ -55,7 +57,7 @@ func showHelp() {
 	fmt.Println("\nLuna - AI Commit Generator")
 	fmt.Println("\nAvailable commands:")
 	fmt.Println("  LunaHelp       -> Show this help screen")
-	fmt.Println("  LunaCommit     -> Generate commit messages for each staged file")
+	fmt.Println("  LunaCommit     -> Generate commit messages for each staged file and commit automatically")
 	fmt.Println("  LunaApikey     -> Set your Gemini API key")
 }
 
@@ -85,13 +87,43 @@ func runCommitGenerator() {
 
 		file := parts[1]
 
-		diff, _ := exec.Command("git", "diff", "--cached", "--", file).Output()
-		if len(diff) == 0 {
+		// Ignorar arquivos binários
+		ext := strings.ToLower(filepath.Ext(file))
+		if ext == ".exe" || ext == ".dll" || ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".gif" {
+			continue
+		}
+
+		diff, err := exec.Command("git", "diff", "--cached", "--", file).Output()
+		if err != nil || len(diff) == 0 {
 			continue
 		}
 
 		commitMsg := callGemini(apiKey, string(diff))
-		fmt.Printf("File: %s\nSuggested commit: %s\n\n", file, commitMsg)
+		if commitMsg == "" {
+			commitMsg = "chore: update " + file
+		} else {
+			// Garante prefixo tipo "chore:" ou "refactor:" se não tiver
+			prefixes := []string{"chore:", "refactor:", "feat:", "fix:", "docs:", "test:"}
+			hasPrefix := false
+			for _, p := range prefixes {
+				if strings.HasPrefix(strings.ToLower(commitMsg), p) {
+					hasPrefix = true
+					break
+				}
+			}
+			if !hasPrefix {
+				commitMsg = "chore: " + commitMsg
+			}
+		}
+
+		// Faz o commit automático
+		cmd := exec.Command("git", "commit", "-m", commitMsg, "--", file)
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			fmt.Printf("Error committing %s: %s\n", file, string(out))
+		} else {
+			fmt.Printf("Committed %s with message: %s\n", file, commitMsg)
+		}
 	}
 }
 
@@ -100,7 +132,7 @@ func callGemini(apiKey, diff string) string {
 		Contents: []Content{
 			{
 				Parts: []Part{
-					{Text: fmt.Sprintf("Generate a short, clear, and descriptive commit message for the following diff:\n%s", diff)},
+					{Text: fmt.Sprintf("Generate a short commit message for the following diff (include type like chore:, refactor:, feat:, fix:, docs:, test:):\n%s", diff)},
 				},
 			},
 		},
@@ -110,14 +142,14 @@ func callGemini(apiKey, diff string) string {
 
 	req, err := http.NewRequest("POST", API_URL+"?key="+apiKey, bytes.NewReader(jsonData))
 	if err != nil {
-		return "Error creating request"
+		return ""
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "Request error"
+		return ""
 	}
 	defer resp.Body.Close()
 
@@ -125,13 +157,13 @@ func callGemini(apiKey, diff string) string {
 
 	var response Response
 	if err := json.Unmarshal(data, &response); err != nil {
-		return "Error parsing JSON"
+		return ""
 	}
 
 	if len(response.Candidates) > 0 && len(response.Candidates[0].Content.Parts) > 0 {
-		return response.Candidates[0].Content.Parts[0].Text
+		return strings.TrimSpace(response.Candidates[0].Content.Parts[0].Text)
 	}
-	return "Could not generate commit"
+	return ""
 }
 
 func setApiKey() {

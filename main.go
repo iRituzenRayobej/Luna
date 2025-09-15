@@ -16,6 +16,7 @@ import (
 
 const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
+
 const (
 	Reset  = "\033[0m"
 	Red    = "\033[31m"
@@ -67,9 +68,25 @@ func main() {
 }
 
 func showHelp() {
-	fmt.Println(Cyan + "\nLuna - AI Commit Generator" + Reset)
-	fmt.Println(Yellow + "\nAvailable commands:" + Reset)
-	fmt.Println(Green + "  LunaHelp       -> Show this help screen")
+	fmt.Println(Cyan + `
+ __                                     
+/  |                                    
+$$ |       __    __  _______    ______  
+$$ |      /  |  /  |/       \  /      \ 
+$$ |      $$ |  $$ |$$$$$$$  | $$$$$$  |
+$$ |      $$ |  $$ |$$ |  $$ | /    $$ |
+$$ |_____ $$ \__$$ |$$ |  $$ |/$$$$$$$ |
+$$       |$$    $$/ $$ |  $$ |$$    $$ |
+$$$$$$$$/  $$$$$$/  $$/   $$/  $$$$$$$/ 
+                                        
+                                        
+                                        
+made by hax & dan
+version: 1.1 (Beta)
+` + Reset)
+
+	fmt.Println(Yellow + "Available commands:" + Reset)
+	fmt.Println(Green + "  LunaHelp       -> Show this help screen with ASCII art")
 	fmt.Println("  LunaCommit     -> Generate commit messages for each staged file with emojis")
 	fmt.Println("  LunaApikey     -> Set your Gemini API key" + Reset)
 }
@@ -120,12 +137,22 @@ func runCommitGenerator() {
 		}
 
 		prefixes := []string{"chore:", "refactor:", "feat:", "fix:", "docs:", "test:"}
-		prefix := prefixes[rand.Intn(len(prefixes))]
+		hasPrefix := false
+		for _, p := range prefixes {
+			if strings.HasPrefix(strings.ToLower(commitMsg), p) {
+				hasPrefix = true
+				break
+			}
+		}
+
+		if !hasPrefix {
+			prefix := prefixes[rand.Intn(len(prefixes))]
+			commitMsg = prefix + " " + commitMsg
+		}
 
 		emoji := emojis[rand.Intn(len(emojis))]
 
-		fullMsg := fmt.Sprintf("%s %s %s", emoji, prefix, commitMsg)
-
+		fullMsg := fmt.Sprintf("%s %s", emoji, commitMsg)
 		if len(fullMsg) > 100 {
 			fullMsg = fullMsg[:97] + "..."
 		}
@@ -145,7 +172,9 @@ func callGemini(apiKey, diff string) string {
 		Contents: []Content{
 			{
 				Parts: []Part{
-					{Text: fmt.Sprintf("Generate a short, concise, one-line commit message for the following diff. Keep it under 60 characters, include optional emojis and type like chore:, refactor:, feat:, fix:, docs:, test:\n%s", diff)},
+					{Text: fmt.Sprintf(
+						"Generate a short, concise, one-line commit message for the following diff. "+
+							"Keep it under 60 characters, include optional emojis and type like chore:, refactor:, feat:, fix:, docs:, test:\n%s", diff)},
 				},
 			},
 		},

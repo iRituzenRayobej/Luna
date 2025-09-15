@@ -16,7 +16,6 @@ import (
 
 const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
-
 const (
 	Reset  = "\033[0m"
 	Red    = "\033[31m"
@@ -55,12 +54,30 @@ func main() {
 		return
 	}
 
-	switch strings.ToLower(os.Args[1]) {
-	case "lunahelp":
+	var cmd string
+	includeEmoji := false
+
+	// Percorre todos os argumentos para identificar comando e flags
+	for _, arg := range os.Args[1:] {
+		larg := strings.ToLower(arg)
+		switch larg {
+		case "-e":
+			includeEmoji = true
+		case "-c", "lc", "lunacommit":
+			cmd = "commit"
+		case "-lh", "lh", "lunahelp":
+			cmd = "help"
+		case "-lkey", "lkey", "lunaapikey":
+			cmd = "apikey"
+		}
+	}
+
+	switch cmd {
+	case "help":
 		showHelp()
-	case "lunacommit":
-		runCommitGenerator()
-	case "lunaapikey":
+	case "commit":
+		runCommitGenerator(includeEmoji)
+	case "apikey":
 		setApiKey()
 	default:
 		fmt.Println(Red + "Unknown command. Use: LunaHelp" + Reset)
@@ -69,29 +86,47 @@ func main() {
 
 func showHelp() {
 	fmt.Println(Cyan + `
- __                                     
-/  |                                    
-$$ |       __    __  _______    ______  
-$$ |      /  |  /  |/       \  /      \ 
-$$ |      $$ |  $$ |$$$$$$$  | $$$$$$  |
-$$ |      $$ |  $$ |$$ |  $$ | /    $$ |
-$$ |_____ $$ \__$$ |$$ |  $$ |/$$$$$$$ |
-$$       |$$    $$/ $$ |  $$ |$$    $$ |
-$$$$$$$$/  $$$$$$/  $$/   $$/  $$$$$$$/ 
-                                        
-                                        
-                                        
+                                                                                                                
+                                      ░░░░░░░░░░                                      
+                                  ░░░░          ░░                                        
+                              ░░░░            ░░                                          
+                            ░░              ░░                                            
+                          ░░              ░░      ██      ██                               
+                        ░░              ░░        ██████████                               
+                        ░░              ░░      ██████████████                              
+                      ░░              ░░        ██████████████                              
+                      ░░              ░░          ██████████                                 
+                      ░░            ░░              ██████                                 
+                    ░░              ░░                ██                                   
+                    ░░              ░░              ██████                                 
+                    ░░              ░░            ██████████                               
+                    ░░              ░░            ██████████                               
+                    ░░                ░░          ██████████                               
+                      ░░              ░░      ██████████████████                           
+                      ░░                ░░  ██████████████████████  ░░                    
+                      ░░                  ░░██████████████████████░░░░                    
+                        ░░                  ░░██████████████████░░  ░░                    
+                        ░░                    ░░░░██████████░░░░    ░░                    
+                          ░░                      ░░░░░░░░░░        ░░                    
+                            ░░                                    ░░                      
+                              ░░                              ░░░░                         
+                                ░░░░                      ░░░░                             
+                                    ░░░░░░          ░░░░░░██                             
+                                          ░░░░░░░░░░    ████                             
+                                                      ████                                               
+                                  
 made by hax & dan
-version: 1.1 (Beta)
+version: 1.3 (Beta)
 ` + Reset)
 
 	fmt.Println(Yellow + "Available commands:" + Reset)
-	fmt.Println(Green + "  LunaHelp       -> Show this help screen with ASCII art")
-	fmt.Println("  LunaCommit     -> Generate commit messages for each staged file with emojis")
-	fmt.Println("  LunaApikey     -> Set your Gemini API key" + Reset)
+	fmt.Println(Green + "  LunaHelp (lh, -lh)       -> Show this help screen with ASCII art")
+	fmt.Println("  LunaCommit (lc, -c)      -> Generate commit messages for each staged file")
+	fmt.Println("      -e                    -> Include emojis in commit messages (optional)")
+	fmt.Println("  LunaApikey (lkey, -lkey) -> Set your Gemini API key" + Reset)
 }
 
-func runCommitGenerator() {
+func runCommitGenerator(includeEmoji bool) {
 	apiKey := os.Getenv("GEMINI_API_KEY")
 	if apiKey == "" {
 		fmt.Println(Red + "Error: Set GEMINI_API_KEY using LunaApikey first" + Reset)
@@ -150,19 +185,21 @@ func runCommitGenerator() {
 			commitMsg = prefix + " " + commitMsg
 		}
 
-		emoji := emojis[rand.Intn(len(emojis))]
-
-		fullMsg := fmt.Sprintf("%s %s", emoji, commitMsg)
-		if len(fullMsg) > 100 {
-			fullMsg = fullMsg[:97] + "..."
+		if includeEmoji {
+			emoji := emojis[rand.Intn(len(emojis))]
+			commitMsg = fmt.Sprintf("%s %s", emoji, commitMsg)
 		}
 
-		cmd := exec.Command("git", "commit", "-m", fullMsg, "--", file)
+		if len(commitMsg) > 100 {
+			commitMsg = commitMsg[:97] + "..."
+		}
+
+		cmd := exec.Command("git", "commit", "-m", commitMsg, "--", file)
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			fmt.Printf(Red+"Error committing %s: %s\n"+Reset, file, string(out))
 		} else {
-			fmt.Printf(Green+"Committed %s with message:\n%s\n\n"+Reset, file, fullMsg)
+			fmt.Printf(Green+"Committed %s with message:\n%s\n\n"+Reset, file, commitMsg)
 		}
 	}
 }

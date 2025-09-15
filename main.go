@@ -12,8 +12,16 @@ import (
 	"strings"
 )
 
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
 
+// ANSI colors
+const (
+	Reset  = "\033[0m"
+	Red    = "\033[31m"
+	Green  = "\033[32m"
+	Yellow = "\033[33m"
+	Cyan   = "\033[36m"
+)
 
 type Part struct {
 	Text string `json:"text"`
@@ -37,7 +45,7 @@ type Response struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Use: LunaHelp to see the commands")
+		fmt.Println(Red + "Use: LunaHelp to see the commands" + Reset)
 		return
 	}
 
@@ -49,28 +57,28 @@ func main() {
 	case "lunaapikey":
 		setApiKey()
 	default:
-		fmt.Println("Unknown command. Use: LunaHelp")
+		fmt.Println(Red + "Unknown command. Use: LunaHelp" + Reset)
 	}
 }
 
 func showHelp() {
-	fmt.Println("\nLuna - AI Commit Generator")
-	fmt.Println("\nAvailable commands:")
-	fmt.Println("  LunaHelp       -> Show this help screen")
+	fmt.Println(Cyan + "\nLuna - AI Commit Generator" + Reset)
+	fmt.Println(Yellow + "\nAvailable commands:" + Reset)
+	fmt.Println(Green + "  LunaHelp       -> Show this help screen")
 	fmt.Println("  LunaCommit     -> Generate commit messages for each staged file and commit automatically")
-	fmt.Println("  LunaApikey     -> Set your Gemini API key")
+	fmt.Println("  LunaApikey     -> Set your Gemini API key" + Reset)
 }
 
 func runCommitGenerator() {
 	apiKey := os.Getenv("GEMINI_API_KEY")
 	if apiKey == "" {
-		fmt.Println("Error: Set GEMINI_API_KEY using LunaApikey first")
+		fmt.Println(Red + "Error: Set GEMINI_API_KEY using LunaApikey first" + Reset)
 		return
 	}
 
 	status, err := exec.Command("git", "status", "--porcelain").Output()
 	if err != nil {
-		fmt.Println("Error running git status:", err)
+		fmt.Println(Red+"Error running git status:", err, Reset)
 		return
 	}
 
@@ -90,11 +98,15 @@ func runCommitGenerator() {
 		// Ignorar arquivos binários
 		ext := strings.ToLower(filepath.Ext(file))
 		if ext == ".exe" || ext == ".dll" || ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".gif" {
+			fmt.Println(Yellow + "Skipping binary file: " + file + Reset)
 			continue
 		}
 
+		fmt.Println(Cyan + "Generating commit for file: " + file + Reset)
+
 		diff, err := exec.Command("git", "diff", "--cached", "--", file).Output()
 		if err != nil || len(diff) == 0 {
+			fmt.Println(Yellow + "No staged changes to commit for file: " + file + Reset)
 			continue
 		}
 
@@ -102,7 +114,7 @@ func runCommitGenerator() {
 		if commitMsg == "" {
 			commitMsg = "chore: update " + file
 		} else {
-			// Garante prefixo tipo "chore:" ou "refactor:" se não tiver
+			// Garante prefixo tipo "chore:", "refactor:", etc.
 			prefixes := []string{"chore:", "refactor:", "feat:", "fix:", "docs:", "test:"}
 			hasPrefix := false
 			for _, p := range prefixes {
@@ -120,9 +132,9 @@ func runCommitGenerator() {
 		cmd := exec.Command("git", "commit", "-m", commitMsg, "--", file)
 		out, err := cmd.CombinedOutput()
 		if err != nil {
-			fmt.Printf("Error committing %s: %s\n", file, string(out))
+			fmt.Printf(Red+"Error committing %s: %s\n"+Reset, file, string(out))
 		} else {
-			fmt.Printf("Committed %s with message: %s\n", file, commitMsg)
+			fmt.Printf(Green+"Committed %s with message:\n%s\n\n"+Reset, file, commitMsg)
 		}
 	}
 }
@@ -168,7 +180,7 @@ func callGemini(apiKey, diff string) string {
 
 func setApiKey() {
 	if len(os.Args) < 3 {
-		fmt.Println("Usage: LunaApikey YOUR_API_KEY")
+		fmt.Println(Red + "Usage: LunaApikey YOUR_API_KEY" + Reset)
 		return
 	}
 
@@ -177,9 +189,9 @@ func setApiKey() {
 	cmd := exec.Command("setx", "GEMINI_API_KEY", apiKey)
 	err := cmd.Run()
 	if err != nil {
-		fmt.Println("Error setting API key:", err)
+		fmt.Println(Red+"Error setting API key:", err, Reset)
 		return
 	}
 
-	fmt.Println("GEMINI_API_KEY set successfully! Close and reopen the terminal.")
+	fmt.Println(Green + "GEMINI_API_KEY set successfully! Close and reopen the terminal." + Reset)
 }

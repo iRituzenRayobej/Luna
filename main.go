@@ -57,7 +57,6 @@ func main() {
 	var cmd string
 	includeEmoji := false
 
-	// Percorre todos os argumentos para identificar comando e flags
 	for _, arg := range os.Args[1:] {
 		larg := strings.ToLower(arg)
 		switch larg {

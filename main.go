@@ -5,16 +5,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
-// ANSI colors
 const (
 	Reset  = "\033[0m"
 	Red    = "\033[31m"
@@ -22,6 +23,8 @@ const (
 	Yellow = "\033[33m"
 	Cyan   = "\033[36m"
 )
+
+var emojis = []string{"✨", "🛠️", "🐛", "🔥", "📝", "🚀", "🔧", "🎨", "🔒", "💄"}
 
 type Part struct {
 	Text string `json:"text"`
@@ -44,6 +47,8 @@ type Response struct {
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	if len(os.Args) < 2 {
 		fmt.Println(Red + "Use: LunaHelp to see the commands" + Reset)
 		return
@@ -65,7 +70,7 @@ func showHelp() {
 	fmt.Println(Cyan + "\nLuna - AI Commit Generator" + Reset)
 	fmt.Println(Yellow + "\nAvailable commands:" + Reset)
 	fmt.Println(Green + "  LunaHelp       -> Show this help screen")
-	fmt.Println("  LunaCommit     -> Generate commit messages for each staged file and commit automatically")
+	fmt.Println("  LunaCommit     -> Generate commit messages for each staged file with emojis")
 	fmt.Println("  LunaApikey     -> Set your Gemini API key" + Reset)
 }
 
@@ -95,7 +100,6 @@ func runCommitGenerator() {
 
 		file := parts[1]
 
-		// Ignorar arquivos binários
 		ext := strings.ToLower(filepath.Ext(file))
 		if ext == ".exe" || ext == ".dll" || ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".gif" {
 			fmt.Println(Yellow + "Skipping binary file: " + file + Reset)
@@ -112,29 +116,26 @@ func runCommitGenerator() {
 
 		commitMsg := callGemini(apiKey, string(diff))
 		if commitMsg == "" {
-			commitMsg = "chore: update " + file
-		} else {
-			// Garante prefixo tipo "chore:", "refactor:", etc.
-			prefixes := []string{"chore:", "refactor:", "feat:", "fix:", "docs:", "test:"}
-			hasPrefix := false
-			for _, p := range prefixes {
-				if strings.HasPrefix(strings.ToLower(commitMsg), p) {
-					hasPrefix = true
-					break
-				}
-			}
-			if !hasPrefix {
-				commitMsg = "chore: " + commitMsg
-			}
+			commitMsg = "update " + file
 		}
 
-		// Faz o commit automático
-		cmd := exec.Command("git", "commit", "-m", commitMsg, "--", file)
+		prefixes := []string{"chore:", "refactor:", "feat:", "fix:", "docs:", "test:"}
+		prefix := prefixes[rand.Intn(len(prefixes))]
+
+		emoji := emojis[rand.Intn(len(emojis))]
+
+		fullMsg := fmt.Sprintf("%s %s %s", emoji, prefix, commitMsg)
+
+		if len(fullMsg) > 100 {
+			fullMsg = fullMsg[:97] + "..."
+		}
+
+		cmd := exec.Command("git", "commit", "-m", fullMsg, "--", file)
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			fmt.Printf(Red+"Error committing %s: %s\n"+Reset, file, string(out))
 		} else {
-			fmt.Printf(Green+"Committed %s with message:\n%s\n\n"+Reset, file, commitMsg)
+			fmt.Printf(Green+"Committed %s with message:\n%s\n\n"+Reset, file, fullMsg)
 		}
 	}
 }
@@ -144,7 +145,7 @@ func callGemini(apiKey, diff string) string {
 		Contents: []Content{
 			{
 				Parts: []Part{
-					{Text: fmt.Sprintf("Generate a short commit message for the following diff (include type like chore:, refactor:, feat:, fix:, docs:, test:):\n%s", diff)},
+					{Text: fmt.Sprintf("Generate a short, concise, one-line commit message for the following diff. Keep it under 60 characters, include optional emojis and type like chore:, refactor:, feat:, fix:, docs:, test:\n%s", diff)},
 				},
 			},
 		},

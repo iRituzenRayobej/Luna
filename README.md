@@ -109,4 +109,5 @@ Committed README.md with message:
 
 ---
 
-Made with ❤️ by hax & dan — version 1.3 (Beta)
+Made with ❤️ by hax — version 1.3 (Beta)
+

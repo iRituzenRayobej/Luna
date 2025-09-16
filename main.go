@@ -62,11 +62,11 @@ func main() {
 		switch larg {
 		case "-e":
 			includeEmoji = true
-		case "-c", "lc", "lunacommit":
+		case "-lc", "lc", "lunacommit":
 			cmd = "commit"
 		case "-lh", "lh", "lunahelp":
 			cmd = "help"
-		case "-lkey", "lkey", "lunaapikey":
+		case "-lk", "lkey", "lunaapikey":
 			cmd = "apikey"
 		}
 	}
@@ -85,35 +85,17 @@ func main() {
 
 func showHelp() {
 	fmt.Println(Cyan + `
-                                                                                                                
-                                      ░░░░░░░░░░                                      
-                                  ░░░░          ░░                                        
-                              ░░░░            ░░                                          
-                            ░░              ░░                                            
-                          ░░              ░░      ██      ██                               
-                        ░░              ░░        ██████████                               
-                        ░░              ░░      ██████████████                              
-                      ░░              ░░        ██████████████                              
-                      ░░              ░░          ██████████                                 
-                      ░░            ░░              ██████                                 
-                    ░░              ░░                ██                                   
-                    ░░              ░░              ██████                                 
-                    ░░              ░░            ██████████                               
-                    ░░              ░░            ██████████                               
-                    ░░                ░░          ██████████                               
-                      ░░              ░░      ██████████████████                           
-                      ░░                ░░  ██████████████████████  ░░                    
-                      ░░                  ░░██████████████████████░░░░                    
-                        ░░                  ░░██████████████████░░  ░░                    
-                        ░░                    ░░░░██████████░░░░    ░░                    
-                          ░░                      ░░░░░░░░░░        ░░                    
-                            ░░                                    ░░                      
-                              ░░                              ░░░░                         
-                                ░░░░                      ░░░░                             
-                                    ░░░░░░          ░░░░░░██                             
-                                          ░░░░░░░░░░    ████                             
-                                                      ████                                               
-                                  
+
+$$\                                    
+$$ |                                   
+$$ |     $$\   $$\ $$$$$$$\   $$$$$$\  
+$$ |     $$ |  $$ |$$  __$$\  \____$$\ 
+$$ |     $$ |  $$ |$$ |  $$ | $$$$$$$ |
+$$ |     $$ |  $$ |$$ |  $$ |$$  __$$ |
+$$$$$$$$\\$$$$$$  |$$ |  $$ |\$$$$$$$ |
+\________|\______/ \__|  \__| \_______|
+                                       
+                                       
 made by hax & dan
 version: 1.3 (Beta)
 ` + Reset)
@@ -146,7 +128,7 @@ fmt.Println()
 
 fmt.Println(Green + "  LunaApikey" + Reset + " (lkey, -lkey)")
 fmt.Println("-> Sets your Gemini API key for the LunaCommit generator.")
-fmt.Println("-> Aliases: lkey, -lkey")
+fmt.Println("-> Aliases: lkey, -lkey")p
 fmt.Println("-> Usage example:")
 fmt.Println("[ + ] lunaapikey YOUR_API_KEY")
 fmt.Println("[ + ] lkey YOUR_API_KEY")
@@ -182,6 +164,7 @@ func runCommitGenerator(includeEmoji bool) {
 		file := parts[1]
 
 		ext := strings.ToLower(filepath.Ext(file))
+
 		if ext == ".exe" || ext == ".dll" || ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".gif" {
 			fmt.Println(Yellow + "Skipping binary file: " + file + Reset)
 			continue
@@ -190,6 +173,7 @@ func runCommitGenerator(includeEmoji bool) {
 		fmt.Println(Cyan + "Generating commit for file: " + file + Reset)
 
 		diff, err := exec.Command("git", "diff", "--cached", "--", file).Output()
+
 		if err != nil || len(diff) == 0 {
 			fmt.Println(Yellow + "No staged changes to commit for file: " + file + Reset)
 			continue
@@ -202,6 +186,7 @@ func runCommitGenerator(includeEmoji bool) {
 
 		prefixes := []string{"chore:", "refactor:", "feat:", "fix:", "docs:", "test:"}
 		hasPrefix := false
+		
 		for _, p := range prefixes {
 			if strings.HasPrefix(strings.ToLower(commitMsg), p) {
 				hasPrefix = true

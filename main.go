@@ -96,7 +96,7 @@ $$$$$$$$\\$$$$$$  |$$ |  $$ |\$$$$$$$ |
 \________|\______/ \__|  \__| \_______|
                                        
                                        
-made by hax & dan
+made by hax
 version: 1.3 (Beta)
 ` + Reset)
 
@@ -163,7 +163,7 @@ func runCommitGenerator(includeEmoji bool) {
 		ext := strings.ToLower(filepath.Ext(file))
 
 		if ext == ".exe" || ext == ".dll" || ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".gif" {
-			fmt.Println(Yellow + "Skipping binary file: " + file + Reset)
+			fmt.Println(Yellow + "Skipping file: " + file + Reset)
 			continue
 		}
 

@@ -102,7 +102,6 @@ version: 1.3 (Beta)
 
 fmt.Println(Yellow + "Available commands:" + Reset)
 
-
 fmt.Println(Green + "  LunaHelp" + Reset + " (lh, -lh)")
 fmt.Println("-> Shows this help screen with ASCII art.")
 fmt.Println("-> Aliases: lh, -lh")
@@ -125,7 +124,6 @@ fmt.Println("[ + ] luna -c")
 fmt.Println("[ + ] luna -c -e  (commit with emojis)")
 fmt.Println()
 
-
 fmt.Println(Green + "  LunaApikey" + Reset + " (lkey, -lkey)")
 fmt.Println("-> Sets your Gemini API key for the LunaCommit generator.")
 fmt.Println("-> Aliases: lkey, -lkey")p
@@ -134,7 +132,6 @@ fmt.Println("[ + ] lunaapikey YOUR_API_KEY")
 fmt.Println("[ + ] lkey YOUR_API_KEY")
 fmt.Println("[ + ] luna -lkey YOUR_API_KEY")
 fmt.Println()
-
 }
 
 func runCommitGenerator(includeEmoji bool) {
@@ -186,7 +183,7 @@ func runCommitGenerator(includeEmoji bool) {
 
 		prefixes := []string{"chore:", "refactor:", "feat:", "fix:", "docs:", "test:"}
 		hasPrefix := false
-		
+
 		for _, p := range prefixes {
 			if strings.HasPrefix(strings.ToLower(commitMsg), p) {
 				hasPrefix = true
@@ -224,8 +221,8 @@ func callGemini(apiKey, diff string) string {
 			{
 				Parts: []Part{
 					{Text: fmt.Sprintf(
-						"Generate a short, concise, one-line commit message for the following diff. "+
-							"Keep it under 60 characters, include optional emojis and type like chore:, refactor:, feat:, fix:, docs:, test:\n%s", diff)},
+						"Generate a short, concise, one-line commit message for the following diff. " +
+							"Keep it under 60 characters and include type like chore:, refactor:, feat:, fix:, docs:, test:\n%s", diff)},
 				},
 			},
 		},

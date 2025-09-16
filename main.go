@@ -126,7 +126,7 @@ fmt.Println()
 
 fmt.Println(Green + "  LunaApikey" + Reset + " (lkey, -lkey)")
 fmt.Println("-> Sets your Gemini API key for the LunaCommit generator.")
-fmt.Println("-> Aliases: lkey, -lkey")p
+fmt.Println("-> Aliases: lkey, -lkey")
 fmt.Println("-> Usage example:")
 fmt.Println("[ + ] lunaapikey YOUR_API_KEY")
 fmt.Println("[ + ] lkey YOUR_API_KEY")

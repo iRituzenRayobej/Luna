@@ -6,7 +6,7 @@ Luna generates concise commit messages for your staged files using Google Gemini
 
 1. **Install**: Download `bin/Luna.exe` and add to PATH
 2. **Setup**: `LunaApikey YOUR_GEMINI_KEY`
-3. **Use**: `git add . && Luna -c`
+3. **Use**: `git add . && Luna -lc`
 
 ## Commands
 
@@ -21,5 +21,6 @@ Luna generates concise commit messages for your staged files using Google Gemini
 - 🇺🇸 [English (EN-US)](docs/readme.en-us.md)
 
 ---
+
 
 Made with ❤️ by hax — version 1.3 (Beta)

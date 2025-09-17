@@ -1,2 +1,3 @@
 ./bin/Luna.exe
 *.exe
+.lunacfg

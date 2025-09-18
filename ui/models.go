@@ -160,6 +160,7 @@ func (m CommitUI) View() string {
 		progressVal := float64(m.currentFile) / float64(len(m.files))
 		b.WriteString(fmt.Sprintf("%s Processing files...\n", m.spinner.View()))
 		b.WriteString(fmt.Sprintf("Progress: %s\n", m.progress.ViewAs(progressVal)))
+
 		if m.currentFile < len(m.files) {
 			b.WriteString(fmt.Sprintf("Current: %s\n", m.files[m.currentFile]))
 		}

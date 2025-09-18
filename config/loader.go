@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 )
 
-
 func getGlobalConfigPath() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -60,7 +59,6 @@ func LoadProjectConfig() Config {
 	return cfg
 }
 
-
 func SaveGlobalConfig(cfg Config) error {
 	path, err := getGlobalConfigPath()
 	if err != nil {
@@ -69,7 +67,6 @@ func SaveGlobalConfig(cfg Config) error {
 	data, _ := json.MarshalIndent(cfg, "", "  ")
 	return ioutil.WriteFile(path, data, 0644)
 }
-
 
 func SaveProjectConfig(cfg Config) error {
 	path := filepath.Join(".", PROJECT_CONFIG_FILE)

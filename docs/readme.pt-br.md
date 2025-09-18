@@ -62,7 +62,7 @@ Prioridade:
 Configurações padrão (do código):
 
 - `ignoredPatterns`: `*.exe`, `*.dll`, `*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.bin`
-- `commitPrefixes`: `chore:`, `refactor:`, `feat:`, `fix:`, `docs:`, `test:`
+- `commitPrefixes`: `chore:`, `refactor:`, `feat:`, `fix:`, `docs:`, `test:`, `etc..`
 - `maxCommitLength`: `72`
 - `defaultEmoji`: `false`
 

@@ -57,7 +57,6 @@ func GetDefaultConfig() Config {
 	}
 }
 
-
 func LoadConfig() Config {
 	projectCfg := LoadProjectConfig()
 	globalCfg := LoadGlobalConfig()
@@ -87,7 +86,6 @@ func ManageConfig(subcmd string) {
 		fmt.Println("Unknown config command")
 	}
 }
-
 
 func initConfigInteractive() {
 	items := []list.Item{
@@ -124,7 +122,6 @@ func initConfigInteractive() {
 
 	createSelectedConfigs(m.selected)
 
-
 	for _, sel := range m.selected {
 		switch sel {
 		case "project":
@@ -144,7 +141,6 @@ func initConfigInteractive() {
 		}
 	}
 }
-
 
 type model struct {
 	list     list.Model

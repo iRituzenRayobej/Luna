@@ -210,9 +210,9 @@ func (m model) View() string {
 		if contains(m.selected, cfgItem.value) ||
 			(cfgItem.value == "both" && len(m.selected) == 2) ||
 			(cfgItem.value == "exit" && len(m.selected) == 0) {
-			view.WriteString("(◉) ")
+			view.WriteString("(★) ")
 		} else {
-			view.WriteString("(•) ")
+			view.WriteString("(☆) ")
 		}
 
 		view.WriteString(cfgItem.title + " - " + cfgItem.desc + "\n")

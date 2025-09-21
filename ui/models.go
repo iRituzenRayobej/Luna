@@ -171,9 +171,9 @@ func (m CommitUI) View() string {
 			msg := m.commitMsgs[file]
 			result := m.commitResults[file]
 
-			status := "✅"
+			status := "✓"
 			if strings.Contains(result, "Error") {
-				status = "❌"
+				status = "✗"
 			}
 
 			b.WriteString(fmt.Sprintf("%s %s: %s\n", status, file, msg))

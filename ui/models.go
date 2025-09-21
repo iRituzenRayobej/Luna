@@ -182,7 +182,7 @@ func (m CommitUI) View() string {
 		b.WriteString("Press 'c' to confirm, 'r' to retry, 'q' to quit\n")
 
 	case stateComplete:
-		b.WriteString("🎉 All files committed successfully!\n")
+		b.WriteString("◆ All files committed successfully!\n")
 		b.WriteString("Exiting in 2 seconds...\n")
 
 	case stateError:

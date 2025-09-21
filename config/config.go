@@ -89,14 +89,14 @@ func ManageConfig(subcmd string) {
 
 func initConfigInteractive() {
 	items := []list.Item{
-		configItem{title: "🔧 .lunacfg", desc: "Project configuration (current directory)", value: "project"},
-		configItem{title: "🌍 .lunarc", desc: "Global configuration (home directory)", value: "global"},
-		configItem{title: "✅ Both files", desc: "Create both configurations", value: "both"},
-		configItem{title: "🚪 Exit", desc: "Exit without creating any files", value: "exit"},
+		configItem{title: ".lunacfg", desc: "Project configuration (current directory)", value: "project"},
+		configItem{title: ".lunarc", desc: "Global configuration (home directory)", value: "global"},
+		configItem{title: "Both files", desc: "Create both configurations", value: "both"},
+		configItem{title: "Exit", desc: "Exit without creating any files", value: "exit"},
 	}
 
 	l := list.New(items, list.NewDefaultDelegate(), 60, 14)
-	l.Title = "📁 Select configuration files to create"
+	l.Title = "🗁 Select configuration files to create"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
 
@@ -191,9 +191,9 @@ func (m model) View() string {
 			}
 			switch sel {
 			case "project":
-				view.WriteString("🔧 .lunacfg")
+				view.WriteString(".lunacfg")
 			case "global":
-				view.WriteString("🌍 .lunarc")
+				view.WriteString(".lunarc")
 			}
 		}
 		view.WriteString("\n\n")
@@ -239,9 +239,9 @@ func createProjectConfig() {
 			fmt.Printf("❌ Error creating .lunacfg: %v\n", err)
 			return
 		}
-		fmt.Println("✅ Created .lunacfg in current directory")
+		fmt.Println("🗸 Created .lunacfg in current directory")
 	} else {
-		fmt.Println("ℹ️ .lunacfg already exists in current directory")
+		fmt.Println("🛈 .lunacfg already exists in current directory")
 	}
 }
 
@@ -253,14 +253,14 @@ func createGlobalConfig() {
 			fmt.Printf("❌ Error creating .lunarc: %v\n", err)
 			return
 		}
-		fmt.Println("✅ Created .lunarc in home directory")
+		fmt.Println("🗸 Created .lunarc in home directory")
 	} else {
-		fmt.Println("ℹ️ .lunarc already exists in home directory")
+		fmt.Println("🛈 .lunarc already exists in home directory")
 	}
 }
 
 func askForAPIKey(configType string) string {
-	fmt.Printf("🔑 Set API key for %s? (Enter to skip or paste)\n", configType)
+	fmt.Printf("→ Set API key for %s? (Enter to skip or paste)\n", configType)
 	reader := bufio.NewReader(os.Stdin)
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)

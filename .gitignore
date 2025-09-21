@@ -1,3 +1,4 @@
-./bin/Luna.exe
+./bin/*
 *.exe
 .lunacfg
+*.so

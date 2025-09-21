@@ -166,7 +166,7 @@ func (m CommitUI) View() string {
 		}
 
 	case stateReview:
-		b.WriteString("📝 Review Commit Messages:\n\n")
+		b.WriteString("🛈 Review Commit Messages:\n\n")
 		for _, file := range m.files {
 			msg := m.commitMsgs[file]
 			result := m.commitResults[file]

